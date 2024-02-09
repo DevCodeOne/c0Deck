@@ -7,11 +7,22 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+find_package(Qt6 COMPONENTS Core Quick Gui Qml WebView QuickControls2 REQUIRED)
+qt_standard_project_setup(REQUIRES 6.4)
+
+include(FetchContent)
+FetchContent_Declare(
+        cpp-httplib
+        GIT_REPOSITORY https://github.com/yhirose/cpp-httplib
+        GIT_TAG v0.15.3
+)
+
+FetchContent_MakeAvailable(cpp-httplib) 
+
 add_subdirectory(src)
 
 if (ENABLE_TESTING)
     enable_testing()
-    include(FetchContent)
     FetchContent_Declare(
         googletest
         GIT_REPOSITORY https://github.com/google/googletest
