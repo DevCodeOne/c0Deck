@@ -9,6 +9,8 @@
 !src/
 !src/*
 !src/qml/*
+!res/
+!res/*
 !CMakeLists.txt
 !.gitignore
 !README.md
