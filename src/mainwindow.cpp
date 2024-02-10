@@ -6,11 +6,14 @@
 #include <QScreen>
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
+#include <QStyleHints>
 #include <QtQml/QQmlContext>
-#include <QtWebView/QtWebView>
+
+#include <qtwebengineglobal.h>
 
 bool MainWindow::initialize(int argc, char *argv[]) {
-    QtWebView::initialize();
+    QQuickStyle::setStyle("Material");
+    QtWebEngine::initialize();
 
     QGuiApplication application(argc, argv);
     QGuiApplication::setApplicationDisplayName(QCoreApplication::translate("main", "Default"));
@@ -39,8 +42,9 @@ bool MainWindow::initialize(int argc, char *argv[]) {
     context->setContextProperty(QStringLiteral("initialWidth"), 1200);
     context->setContextProperty(QStringLiteral("initialHeight"), 400);
     context->setContextProperty(QStringLiteral("iconSize"), 100);
+    context->setContextProperty(QStringLiteral("landScape"), false);
 
-    engine.load(QUrl(QStringLiteral("qrc:/c0deck/qml/MainWindow.qml")));
+    engine.load(QUrl(QStringLiteral("qrc:/qml/MainWindow.qml")));
 
     if (engine.rootObjects().isEmpty()) {
         return -1;

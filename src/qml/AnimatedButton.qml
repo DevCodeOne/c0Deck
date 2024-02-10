@@ -1,24 +1,22 @@
 import QtQuick 2.0
-import QtQuick.Controls 2.0
-import QtQuick.Controls.Material
-import QtQuick.Layouts
+import QtQuick.Controls 2.12
+import QtQuick.Controls.Material 2.12
+import QtQuick.Layouts 1.11
 
 Rectangle {
-    width: animation.width
-    height: animation.height
+    width: iconSize
+    height: iconSize
     color: "transparent"
     border.color: Material.accent
     border.width: 5
     radius: 10
     Button {
+        width: iconSize
+        height: iconSize
         background: 
             AnimatedImage {
-                width: iconSize
-                height: iconSize
-                sourceSize.width: iconSize
-                sourceSize.height: iconSize
                 id : animation
-                source: "file:///home/chris/Programming/c0Deck/res/ArrowAnimated.gif"
+                source: "qrc:/ArrowAnimated.gif"
             }
     }
 }

@@ -7,8 +7,12 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(Qt6 COMPONENTS Core Quick Gui Qml WebView QuickControls2 REQUIRED)
-qt_standard_project_setup(REQUIRES 6.4)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
+find_package(Qt5 COMPONENTS Core Quick Gui Qml WebEngine QuickControls2 REQUIRED)
+# qt_standard_project_setup(REQUIRES 6.4)
 
 include(FetchContent)
 FetchContent_Declare(
