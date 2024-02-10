@@ -1,0 +1,8 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file>qml/MainWindow.qml</file>
+        <file>qml/AnimatedButton.qml</file>
+        <file alias="ArrowAnimated.gif">../res/ArrowAnimated.gif</file>
+    </qresource>
+</RCC>
