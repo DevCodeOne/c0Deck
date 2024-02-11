@@ -1,0 +1,33 @@
+{
+    "server" : "127.0.0.1:8050",
+    "screen": { "width" : "1280", "height" : "400", "orientation" : "landscape"},
+    "iconSize" : 65,
+    "controls" : [
+        {
+            "type": "buttons",
+            "name" : "Main",
+            "params" : [
+                {
+                    "icon": "ArrowAnimated.gif",
+                    "action": "Ctrl+C"
+                },
+                {
+                    "icon": "ArrowAnimated.gif",
+                    "action": "Ctrl+V"
+                }
+            ]
+        },
+        {
+            "type" : "volume-control",
+            "name" : "VolumeControl",
+            "params": { }
+        },
+        {
+            "type" : "web-control",
+            "name" : "WebControl",
+            "params" : {
+                "url" : "https://www.google.de"
+            }
+        }
+    ]
+}

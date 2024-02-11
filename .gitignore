@@ -15,3 +15,13 @@
 !.gitignore
 !README.md
 !LICENSE
+
+src/CMakeFiles
+src/Makefile
+src/cmake_install.cmake
+
+tests/CMakeFiles
+tests/Makefile
+tests/CTestTestfile.cmake
+tests/cmake_install.cmake
+tests/init\[1\]_include.cmake

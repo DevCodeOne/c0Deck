@@ -1,20 +1,22 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Controls.Material 2.12
-import QtWebEngine 1.3
 import QtQuick.Layouts 1.11
+import QtQml.Models 2.1
+import QtWebEngine 1.3
 
 ApplicationWindow {
     id: window
     visible: true
     width: initialWidth
     height: initialHeight
-    title: webView.title
+    title: "c0Deck"
 
     Material.theme: Material.Dark
     Material.accent: Material.Cyan
 
     Item {
+        id: base
         transform: [
             Rotation {
                 angle: landScape ? 270 : 0
@@ -38,45 +40,17 @@ ApplicationWindow {
                 id: mainTabs
                 position: TabBar.Footer
                 contentHeight: 50 
+                objectName : "tabs"
 
                 currentIndex: 0
 
-                TabButton {
-                    text: qsTr("MainControl")
-                }
-
-                TabButton {
-                    text: qsTr("WebControl")
-                }
             }
 
             StackLayout {
                 Layout.fillWidth : true
                 currentIndex: mainTabs.currentIndex
+                objectName : "content"
 
-                GridLayout {
-                    id: buttonLayout
-                    columnSpacing: 10
-                    rowSpacing: 10
-                    columns: 10
-
-                    AnimatedButton {
-                        id: "first"
-                        Layout.preferredWidth: iconSize
-                        Layout.preferredHeight: iconSize
-                    }
-
-                }
-
-                WebEngineView {
-                    Layout.fillWidth: true
-                    id: webView
-                    url: initialUrl
-
-                    onNewViewRequested: function(request) {
-                        request.openIn(webView)
-                    }
-                }
             }
         }
     }

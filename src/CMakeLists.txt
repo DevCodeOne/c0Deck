@@ -10,8 +10,13 @@ set(SOURCES_EXEC
     c0deck.cpp
     animatedbuttonsview.h
     animatedbuttonsview.cpp
-    mainwindow.h
-    mainwindow.cpp
+    application_entry.h
+    application_entry.cpp
+    config.h
+    config.cpp
+    instance.h
+    instance.cpp
+    json_utils.h
     
     resources.qrc
 )
@@ -33,7 +38,7 @@ set(SOURCES_EXEC
 add_executable(c0deck ${SOURCES_EXEC})
 
 target_link_libraries(c0deck PRIVATE c0deckLib)
-target_link_libraries(c0deck PRIVATE httplib)
+target_link_libraries(c0deck PRIVATE httplib nlohmann_json spdlog)
 # target_link_libraries(c0deck PRIVATE Qt6::Core Qt6::Gui Qt6::Quick Qt6::Qml Qt6::WebView Qt6::QuickControls2)
 target_link_libraries(c0deck PRIVATE Qt5::Core Qt5::Gui Qt5::Quick Qt5::Qml Qt5::WebEngine Qt5::QuickControls2)
 
