@@ -9,6 +9,7 @@
 !src/
 !src/*
 !src/qml/*
+!src/controls/*
 !res/
 !res/*
 !CMakeLists.txt

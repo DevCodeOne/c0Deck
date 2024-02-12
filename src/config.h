@@ -39,26 +39,16 @@ struct Screen {
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Screen, width, height);
 
-// Maybe use generic string, to be able to register these types
-enum struct ControlType : uint8_t {
-    Buttons,
-    WebControl,
-    VolumeControl
-};
-
-NLOHMANN_JSON_SERIALIZE_ENUM(ControlType, {
-    {ControlType::Buttons, "buttons"},
-    {ControlType::WebControl, "web-control"},
-    {ControlType::VolumeControl, "volume-control"}
-})
+// Possibly use nlohmann::json as value parameter in the future, for now only string values
+using ComponentParameters = std::map<std::string, std::string>;
 
 struct Control {
     // Different control types
-    ControlType type;
+    std::string type;
     // Name of the tab
     std::string name;
     // Parameters for component type
-    nlohmann::json params;
+    ComponentParameters params;
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Control, type, name, params)

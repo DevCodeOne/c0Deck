@@ -4,7 +4,7 @@
     "iconSize" : 65,
     "controls" : [
         {
-            "type": "buttons",
+            "type": "ButtonControl",
             "name" : "Main",
             "params" : [
                 {
@@ -18,12 +18,12 @@
             ]
         },
         {
-            "type" : "volume-control",
+            "type" : "VolumeControl",
             "name" : "VolumeControl",
             "params": { }
         },
         {
-            "type" : "web-control",
+            "type" : "WebControl",
             "name" : "WebControl",
             "params" : {
                 "url" : "https://www.google.de"

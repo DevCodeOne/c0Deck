@@ -21,6 +21,8 @@ struct InstanceEvents {
 class Instance {
     public:
 
+        using ComponentRegistryType = ComponentRegistry;
+
         Instance(InstanceEvents events);
 
         Instance(const Instance &other) = delete;
@@ -40,6 +42,8 @@ class Instance {
         bool addArgument(const std::string &name);
         bool setArgumentValue(std::string name, std::string value);
         bool initRuntime();
+
+        ComponentRegistry &getComponentRegistry();
 
     private:
         ComponentRegistry components;

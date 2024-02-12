@@ -1,6 +1,12 @@
 #pragma once 
 
+#include <string>
+#include <string_view>
+
 #include <QAbstractListModel>
+
+#include "config.h"
+#include "controls/componentcreator.h"
 
 class AnimatedButton {
     public:
@@ -21,4 +27,22 @@ class ButtonList : public QAbstractListModel {
         void populate() { }
     private:
         QList<AnimatedButton> mData;
+};
+
+class ButtonControl {
+    public:
+        static inline constexpr std::string_view type = "ButtonControl";
+
+        static void initializeComponent();
+
+        ButtonControl(const ButtonControl &other) = delete;
+        ButtonControl(ButtonControl &&other) = default;
+        ~ButtonControl() = default;
+
+        ButtonControl &operator=(const ButtonControl &other) = delete;
+        ButtonControl &operator=(ButtonControl &&other) = default;
+
+        static ButtonControl createInstance(const Control &parameters, ComponentCreator &creator);
+    private:
+        ButtonControl() = default;
 };

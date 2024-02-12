@@ -8,8 +8,6 @@ target_include_directories(c0deckLib PUBLIC .)
 
 set(SOURCES_EXEC
     c0deck.cpp
-    animatedbuttonsview.h
-    animatedbuttonsview.cpp
     application_entry.h
     application_entry.cpp
     config.h
@@ -17,6 +15,13 @@ set(SOURCES_EXEC
     instance.h
     instance.cpp
     json_utils.h
+
+    controls/componentcreator.h
+    controls/componentcreator.cpp
+    controls/animatedbuttonsview.h
+    controls/animatedbuttonsview.cpp
+    controls/webcontrol.h
+    controls/webcontrol.cpp
     
     resources.qrc
 )

@@ -1,6 +1,6 @@
 #include <chrono>
+#include <thread>
 
-#include <qnamespace.h>
 #include <spdlog/spdlog.h>
 
 #include <QtCore/QCommandLineOption>
@@ -14,14 +14,14 @@
 #include <QtWebEngine>
 #include <QQmlComponent>
 #include <QMap>
-#include <thread>
 
 #include "application_entry.h"
 #include "instance.h"
+#include "controls/componentcreator.h"
 
 bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
     QQuickStyle::setStyle("Material");
-    QtWebEngine::initialize();
+    Instance::ComponentRegistryType::initializeComponents();
 
     QGuiApplication application(argc, argv);
     QGuiApplication::setApplicationDisplayName(QCoreApplication::translate("main", "Default"));
@@ -55,7 +55,6 @@ bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
 
     QQmlApplicationEngine engine;
     QQmlContext *context = engine.rootContext();
-    context->setContextProperty(QStringLiteral("initialUrl"), QString("https://www.google.de"));
 
     QRect geometry = QGuiApplication::primaryScreen()->availableVirtualGeometry();
 
@@ -71,25 +70,32 @@ bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
     }
 
 
-    QObject *content = engine.rootObjects().first()->findChild<QObject *>("content");
-    QObject *tabbar = engine.rootObjects().first()->findChild<QObject *>("tabs");
+    // QObject *content = engine.rootObjects().first()->findChild<QObject *>("content");
+    // QObject *tabbar = engine.rootObjects().first()->findChild<QObject *>("tabs");
 
-    spdlog::debug("ContentPtr : {}, TabbarPtr : {}", (void *) content, (void *) tabbar);
+    // spdlog::debug("ContentPtr : {}, TabbarPtr : {}", (void *) content, (void *) tabbar);
 
-    QQmlComponent component(&engine, QUrl("qrc:/qml/WebControl.qml"));
-    QMap<QString, QVariant> properties;
-    properties["intialUrl"] = "https://www.google.de";
-    QObject *createdComponent = component.createWithInitialProperties(properties);
-    QQuickItem *createdItem = qobject_cast<QQuickItem *>(createdComponent);
-    createdComponent->setParent(content);
-    createdItem->setParentItem(qobject_cast<QQuickItem *>(content));
+    // QQmlComponent component(&engine, QUrl("qrc:/qml/WebControl.qml"));
+    // QMap<QString, QVariant> properties;
+    // properties["intialUrl"] = "https://www.google.de";
+    // QObject *createdComponent = component.createWithInitialProperties(properties);
+    // QQuickItem *createdItem = qobject_cast<QQuickItem *>(createdComponent);
+    // createdComponent->setParent(content);
+    // createdItem->setParentItem(qobject_cast<QQuickItem *>(content));
 
-    QQmlComponent tab(&engine, QUrl("qrc:/qml/CustomTabButton.qml"));
-    properties["text"] = "WebControl";
-    QObject *createdComponent2 = tab.createWithInitialProperties(properties);
-    QQuickItem *createdItem2 = qobject_cast<QQuickItem *>(createdComponent2);
-    createdComponent2->setParent(tabbar);
-    createdItem2->setParentItem(qobject_cast<QQuickItem *>(tabbar));
+    // QQmlComponent tab(&engine, QUrl("qrc:/qml/CustomTabButton.qml"));
+    // properties["text"] = "WebControl";
+    // QObject *createdComponent2 = tab.createWithInitialProperties(properties);
+    // QQuickItem *createdItem2 = qobject_cast<QQuickItem *>(createdComponent2);
+    // createdComponent2->setParent(tabbar);
+    // createdItem2->setParentItem(qobject_cast<QQuickItem *>(tabbar));
+
+    auto &componentRegistry = instance.getComponentRegistry();
+    ComponentCreator creator{};
+
+    for (const auto &currentControl : instance.getConfig().getControls()) {
+        componentRegistry.createInstance(currentControl, creator);
+    }
 
     return application.exec();
 }

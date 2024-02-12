@@ -2,4 +2,7 @@
 
 #include <tuple>
 
-using ComponentList = std::tuple<int, double>;
+#include "controls/animatedbuttonsview.h"
+#include "controls/webcontrol.h"
+
+using ComponentList = std::tuple<ButtonControl, WebControl>;

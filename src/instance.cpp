@@ -1,4 +1,5 @@
 #include "instance.h"
+#include "components.h"
 
 Instance::Instance(InstanceEvents events) : events(events) {}
 
@@ -49,4 +50,8 @@ bool Instance::setArgumentValue(std::string name, std::string value) {
 
 bool Instance::initRuntime() {
     return events.init(*this);
+}
+
+auto Instance::getComponentRegistry() -> ComponentRegistry & {
+    return components;
 }
