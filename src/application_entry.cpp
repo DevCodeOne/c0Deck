@@ -1,4 +1,5 @@
 #include <chrono>
+#include <type_traits>
 #include <thread>
 
 #include <spdlog/spdlog.h>
@@ -14,9 +15,11 @@
 #include <QtWebEngine>
 #include <QQmlComponent>
 #include <QMap>
+#include <variant>
 
 #include "application_entry.h"
 #include "instance.h"
+#include "utils.h"
 #include "controls/componentcreator.h"
 
 bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
@@ -70,28 +73,63 @@ bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
     }
 
 
-    // QObject *content = engine.rootObjects().first()->findChild<QObject *>("content");
-    // QObject *tabbar = engine.rootObjects().first()->findChild<QObject *>("tabs");
+    QObject *content = engine.rootObjects().first()->findChild<QObject *>("content");
+    QObject *tabbar = engine.rootObjects().first()->findChild<QObject *>("tabs");
 
-    // spdlog::debug("ContentPtr : {}, TabbarPtr : {}", (void *) content, (void *) tabbar);
-
-    // QQmlComponent component(&engine, QUrl("qrc:/qml/WebControl.qml"));
-    // QMap<QString, QVariant> properties;
-    // properties["intialUrl"] = "https://www.google.de";
-    // QObject *createdComponent = component.createWithInitialProperties(properties);
-    // QQuickItem *createdItem = qobject_cast<QQuickItem *>(createdComponent);
-    // createdComponent->setParent(content);
-    // createdItem->setParentItem(qobject_cast<QQuickItem *>(content));
-
-    // QQmlComponent tab(&engine, QUrl("qrc:/qml/CustomTabButton.qml"));
-    // properties["text"] = "WebControl";
-    // QObject *createdComponent2 = tab.createWithInitialProperties(properties);
-    // QQuickItem *createdItem2 = qobject_cast<QQuickItem *>(createdComponent2);
-    // createdComponent2->setParent(tabbar);
-    // createdItem2->setParentItem(qobject_cast<QQuickItem *>(tabbar));
+    spdlog::debug("ContentPtr : {}, TabbarPtr : {}", (void *) content, (void *) tabbar);
 
     auto &componentRegistry = instance.getComponentRegistry();
-    ComponentCreator creator{};
+
+    auto qmlCreator = 
+    [&engine, &content, &tabbar]
+        (const std::string &title, const std::string &componentName, const ComponentPropertiesType &properties, auto *model) {
+        auto name = fmt::format("qrc:/qml/{}.qml", componentName);
+        spdlog::debug("Adding component : {}", name);
+        // The same component can probably be loaded only once -> use hashmap
+        QQmlComponent loadedComponent(&engine, QUrl(name.c_str()));
+        QQmlComponent tabComponent(&engine, QUrl("qrc:/qml/CustomTabButton.qml"));
+        QMap<QString, QVariant> qprops;
+
+        for (const auto &[key, value] : properties) {
+            std::visit([&key](const auto &value) {
+                spdlog::debug("Adding at key : {} value : {}", key, value);
+            }, value);
+            // TODO: improve this
+            if (std::holds_alternative<std::string>(value)) {
+                qprops[QString::fromStdString(key)] = QString::fromStdString(std::get<std::string>(value));
+            } else if (std::holds_alternative<int>(value)) {
+                qprops[QString::fromStdString(key)] = std::get<int>(value);
+            } else if (std::holds_alternative<unsigned int>(value)) {
+                qprops[QString::fromStdString(key)] = std::get<unsigned int>(value);
+            }
+        }
+
+        constexpr bool isVoidPtr = std::is_same_v<void, std::decay_t<std::remove_pointer_t<decltype(model)>>>;
+        GenerateIf<!isVoidPtr>::call(
+            [](auto &qprops, auto *model){
+                spdlog::debug("Setting model to value : {}", (void *) model);
+                qprops["model"] = QVariant::fromValue(model);
+            }, qprops, model);
+
+        QObject *createdComponent = loadedComponent.createWithInitialProperties(qprops);
+        QQuickItem *createdItem = qobject_cast<QQuickItem *>(createdComponent);
+        createdComponent->setParent(content);
+        createdItem->setParentItem(qobject_cast<QQuickItem *>(content));
+
+        spdlog::debug("Created component : {}", name);
+
+        qprops["text"] = QString::fromStdString(title);
+        QObject *createdTab = tabComponent.createWithInitialProperties(qprops);
+        QQuickItem *createdTabItem = qobject_cast<QQuickItem *>(createdTab);
+        createdTabItem->setParent(tabbar);
+        createdTabItem->setParentItem(qobject_cast<QQuickItem *>(tabbar));
+
+        spdlog::debug("Created tab for component : {}");
+
+        return true;
+    };
+
+    ComponentCreator creator{qmlCreator};
 
     for (const auto &currentControl : instance.getConfig().getControls()) {
         componentRegistry.createInstance(currentControl, creator);

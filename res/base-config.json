@@ -1,12 +1,14 @@
 {
     "server" : "127.0.0.1:8050",
     "screen": { "width" : "1280", "height" : "400", "orientation" : "landscape"},
-    "iconSize" : 65,
     "controls" : [
         {
-            "type": "ButtonControl",
+            "type": "ButtonView",
             "name" : "Main",
-            "params" : [
+            "params" : {
+                "iconSize" : 65,
+                "spacing" : 8,
+                "actions" : [
                 {
                     "icon": "ArrowAnimated.gif",
                     "action": "Ctrl+C"
@@ -15,7 +17,8 @@
                     "icon": "ArrowAnimated.gif",
                     "action": "Ctrl+V"
                 }
-            ]
+                ]
+            }
         },
         {
             "type" : "VolumeControl",
@@ -26,7 +29,7 @@
             "type" : "WebControl",
             "name" : "WebControl",
             "params" : {
-                "url" : "https://www.google.de"
+                "initialUrl" : "https://www.google.de"
             }
         }
     ]

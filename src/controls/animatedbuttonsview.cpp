@@ -1,9 +1,18 @@
 #include "animatedbuttonsview.h"
-#include "controls/componentcreator.h"
 
-void ButtonControl::initializeComponent() {}
+#include <QQmlEngine>
 
-ButtonControl ButtonControl::createInstance(const Control &control, ComponentCreator &creator) {
-    creator.createComponent(control.name, "ButtonView");
-    return ButtonControl{};
+void ButtonControl::initializeComponent() {
+    qmlRegisterType<AnimatedButtonList>("QmlDataTypes", 1, 0, "AnimatedButtonList");
+}
+
+ButtonControl::ButtonControl() : buttonList(std::make_unique<AnimatedButtonList>()) {
+}
+
+AnimatedButtonList *ButtonControl::getButtonList() {
+    return buttonList.get();
+}
+
+const AnimatedButtonList *ButtonControl::getButtonList() const {
+    return buttonList.get();
 }

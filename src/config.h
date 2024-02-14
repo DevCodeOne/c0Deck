@@ -39,16 +39,13 @@ struct Screen {
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Screen, width, height);
 
-// Possibly use nlohmann::json as value parameter in the future, for now only string values
-using ComponentParameters = std::map<std::string, std::string>;
-
 struct Control {
     // Different control types
     std::string type;
     // Name of the tab
     std::string name;
     // Parameters for component type
-    ComponentParameters params;
+    nlohmann::json params;
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Control, type, name, params)
@@ -70,8 +67,6 @@ class Config {
         Screen screen {"max", "max", Angle::_0};
         // Array of controls
         std::vector<Control> controls;
-        // Size of icons, might change to string in the future for different approach e.g. 8x8 (8 rows by 8 columns -> make it fit)
-        uint iconSize; 
         
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Config, server, screen, controls)
 };

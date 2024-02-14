@@ -1,16 +1,22 @@
-import QtQuick 2.12
-import QtQuick.Layouts 1.11
+import QtQuick 2.15
 
-GridLayout {
-    id: buttonLayout
-    columnSpacing: 10
-    rowSpacing: 10
-    columns: 10
+import QmlDataTypes 1.0
 
-    AnimatedButton {
-        id: "first"
-        Layout.preferredWidth: iconSize
-        Layout.preferredHeight: iconSize
+GridView {
+
+    id: buttonGrid
+
+    required property int iconSize
+    required property int spacing
+
+    cellWidth: 65
+    cellHeight: 65
+
+    model: AnimatedButtonList {}
+
+    delegate : AnimatedButton {
+        width: buttonGrid.cellWidth - 8
+        height: buttonGrid.cellHeight - 8
     }
 
 }
