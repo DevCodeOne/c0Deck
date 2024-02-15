@@ -1,8 +1,7 @@
 #include <chrono>
+#include <filesystem>
 #include <type_traits>
 #include <thread>
-
-#include <spdlog/spdlog.h>
 
 #include <QtCore/QCommandLineOption>
 #include <QtCore/QCommandLineParser>
@@ -91,16 +90,27 @@ bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
         QMap<QString, QVariant> qprops;
 
         for (const auto &[key, value] : properties) {
-            std::visit([&key](const auto &value) {
-                spdlog::debug("Adding at key : {} value : {}", key, value);
-            }, value);
-            // TODO: improve this
+            // std::visit([&key](const auto &value) {
+            //     spdlog::debug("Adding at key : {} value : {}", key, value);
+            // }, value);
+            // TODO: improve this -> move to own class
             if (std::holds_alternative<std::string>(value)) {
+                spdlog::debug("String input : {}", std::get<std::string>(value));
                 qprops[QString::fromStdString(key)] = QString::fromStdString(std::get<std::string>(value));
             } else if (std::holds_alternative<int>(value)) {
                 qprops[QString::fromStdString(key)] = std::get<int>(value);
             } else if (std::holds_alternative<unsigned int>(value)) {
                 qprops[QString::fromStdString(key)] = std::get<unsigned int>(value);
+            } else if (std::holds_alternative<std::filesystem::path>(value)) {
+                auto path = std::get<std::filesystem::path>(value);
+                spdlog::debug("Path input : {}", path.c_str());
+
+                if (!path.is_absolute()) {
+                    path = std::filesystem::absolute(path);
+                    spdlog::debug("Converted path to absolute path : {}", path.c_str());
+                }
+
+                qprops[QString::fromStdString(key)] = QString(path.c_str());
             }
         }
 
@@ -124,9 +134,9 @@ bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
         createdTabItem->setParent(tabbar);
         createdTabItem->setParentItem(qobject_cast<QQuickItem *>(tabbar));
 
-        spdlog::debug("Created tab for component : {}");
+        spdlog::debug("Created tab for component : {}", name);
 
-        return true;
+        return createdComponent;
     };
 
     ComponentCreator creator{qmlCreator};

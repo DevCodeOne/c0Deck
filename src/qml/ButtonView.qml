@@ -6,17 +6,24 @@ GridView {
 
     id: buttonGrid
 
+    signal doAction(action: string)
+
     required property int iconSize
     required property int spacing
 
-    cellWidth: 65
-    cellHeight: 65
+    cellWidth: iconSize + spacing
+    cellHeight: iconSize + spacing
+
 
     model: AnimatedButtonList {}
 
     delegate : AnimatedButton {
-        width: buttonGrid.cellWidth - 8
-        height: buttonGrid.cellHeight - 8
+        TapHandler {
+            onTapped: buttonGrid.doAction(action)
+        }
+
+        width: buttonGrid.cellWidth - spacing
+        height: buttonGrid.cellHeight - spacing
     }
 
 }

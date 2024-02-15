@@ -6,6 +6,5 @@
         <file>qml/ButtonView.qml</file>
         <file>qml/WebControl.qml</file>
         <file>qml/CustomTabButton.qml</file>
-        <file alias="ArrowAnimated.gif">../res/ArrowAnimated.gif</file>
     </qresource>
 </RCC>

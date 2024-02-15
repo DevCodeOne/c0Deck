@@ -6,15 +6,15 @@
             "type": "ButtonView",
             "name" : "Main",
             "params" : {
-                "iconSize" : 65,
-                "spacing" : 8,
+                "iconSize" : 100,
+                "spacing" : 20,
                 "actions" : [
                 {
-                    "icon": "ArrowAnimated.gif",
+                    "icon": "../res/ArrowAnimated.gif",
                     "action": "Ctrl+C"
                 },
                 {
-                    "icon": "ArrowAnimated.gif",
+                    "icon": "../res/ArrowAnimated.gif",
                     "action": "Ctrl+V"
                 }
                 ]

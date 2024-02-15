@@ -1,19 +1,22 @@
 #pragma once 
 
+#include <filesystem>
 #include <string>
 #include <string_view>
 #include <memory>
 
+#include "nlohmann/json.hpp"
+
+#include "spdlog/spdlog.h"
+
 #include <QAbstractListModel>
 #include <QObject>
-
-#include "nlohmann/json.hpp"
 
 #include "config.h"
 #include "controls/componentcreator.h"
 
 struct AnimatedButton {
-    std::string icon;
+    std::filesystem::path icon;
     std::string action;
 };
 
@@ -41,9 +44,16 @@ class AnimatedButtonList : public QAbstractListModel {
             DataRole roleAsEnum = static_cast<DataRole>(role);
 
             switch (roleAsEnum) {
-                case DataRole::Icon:
-                return QString::fromStdString(mData[index.row()].icon);
-                break;
+                case DataRole::Icon: 
+                {
+                    using namespace std::string_literals;
+                    // TODO: Add conversion from std::filesystem to QString and always generate absolute path
+                    auto absolutePath = std::filesystem::absolute(mData[index.row()].icon);
+                    auto withProtoc = "file://"s + absolutePath.c_str();
+                    spdlog::debug("Absolute path for icon : {}", withProtoc);
+                    return QString::fromStdString(withProtoc);
+                    break;
+                }
                 case DataRole::Action:
                 return QString::fromStdString(mData[index.row()].action);
                 break;
@@ -63,6 +73,14 @@ class AnimatedButtonList : public QAbstractListModel {
         }
     private:
         QVector<AnimatedButton> mData;
+};
+
+// TODO: probably replace this with a central class to handle all possible actions, 
+// so that all possible actions can be triggered with every component
+class ButtonActionHandler : public QObject {
+    Q_OBJECT
+    public slots:
+        void handleAction(const QString &msg);
 };
 
 struct ButtonControlConfig {
@@ -92,12 +110,15 @@ class ButtonControl {
         template<typename CreatorType>
         static ButtonControl createInstance(const Control &parameters, CreatorType &creator);
 
+        const ButtonActionHandler *getActionHandler() const;
+
         const AnimatedButtonList *getButtonList() const;
         AnimatedButtonList *getButtonList();
     private:
         ButtonControl();
 
         std::unique_ptr<AnimatedButtonList> buttonList;
+        std::unique_ptr<ButtonActionHandler> actionHandler;
 };
 
 template<typename CreatorType>
@@ -110,10 +131,14 @@ ButtonControl ButtonControl::createInstance(const Control &control, CreatorType 
     ButtonControl instance{};
     instance.getButtonList()->populate(config.actions);
 
-    creator.template createComponent<AnimatedButtonList>(
+    auto createdComponent = creator.template createComponent<AnimatedButtonList>(
         control.name, 
         "ButtonView", 
         properties, 
         reinterpret_cast<AnimatedButtonList *>(instance.getButtonList()));
+
+    // TODO: put this code in the ButtonActionHandler class
+    QObject::connect(createdComponent, SIGNAL(doAction(QString)), instance.getActionHandler(), SLOT(handleAction(QString)));
+
     return instance;
 }
