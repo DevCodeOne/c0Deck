@@ -24,6 +24,10 @@
 client/CMakeFiles
 client/Makefile
 client/cmake_install.cmake
+client/qmltypes
+client/meta_types
+client/.rcc
+client/.qt_plugins
 
 tests/CMakeFiles
 tests/Makefile

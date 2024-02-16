@@ -6,6 +6,7 @@
             "type": "ButtonView",
             "name" : "Main",
             "params" : {
+                "background" : "../priv-res/background.mp4",
                 "iconSize" : 100,
                 "spacing" : 20,
                 "actions" : [

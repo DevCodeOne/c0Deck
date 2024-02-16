@@ -110,7 +110,9 @@ bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
                     spdlog::debug("Converted path to absolute path : {}", path.c_str());
                 }
 
-                qprops[QString::fromStdString(key)] = QString(path.c_str());
+                using namespace std::string_literals;
+                std::string pathWithProtoc = fmt::format("file://{}", path.c_str());
+                qprops[QString::fromStdString(key)] = QString::fromStdString(pathWithProtoc);
             }
         }
 

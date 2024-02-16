@@ -88,11 +88,13 @@ struct ButtonControlConfig {
     unsigned int iconSize; 
     // Space between buttons
     unsigned int spacing;
+    // Filename of background video
+    std::filesystem::path background;
     // List of actions, every action will create a new button
     std::vector<AnimatedButton> actions;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ButtonControlConfig, iconSize, spacing, actions)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ButtonControlConfig, iconSize, spacing, actions, background)
 
 class ButtonControl {
     public:
@@ -128,6 +130,7 @@ ButtonControl ButtonControl::createInstance(const Control &control, CreatorType 
     auto config = control.params.get<ButtonControlConfig>();
     properties["iconSize"] = config.iconSize;
     properties["spacing"] = config.spacing;
+    properties["background"] = config.background;
     ButtonControl instance{};
     instance.getButtonList()->populate(config.actions);
 
