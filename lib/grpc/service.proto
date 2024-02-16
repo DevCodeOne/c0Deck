@@ -1,0 +1,11 @@
+message Request {
+    required string action = 1;
+}
+
+message Reply {
+    required string result = 1;
+}
+
+service Greeter {
+   rpc doAction(Request) returns (Reply) {}
+}

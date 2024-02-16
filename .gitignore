@@ -8,6 +8,8 @@
 !include/*
 !lib/
 !lib/*
+!lib/grpc
+!lib/grpc/*
 !client/
 !client/*
 !client/qml/*

@@ -60,6 +60,7 @@ bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
 
     QRect geometry = QGuiApplication::primaryScreen()->availableVirtualGeometry();
 
+    // TODO: actually use values of config
     context->setContextProperty(QStringLiteral("initialWidth"), 1200);
     context->setContextProperty(QStringLiteral("initialHeight"), 400);
     context->setContextProperty(QStringLiteral("iconSize"), 100);
