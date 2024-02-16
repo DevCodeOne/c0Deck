@@ -6,10 +6,14 @@
 !tests/*
 !include
 !include/*
-!src/
-!src/*
-!src/qml/*
-!src/controls/*
+!lib/
+!lib/*
+!client/
+!client/*
+!client/qml/*
+!client/controls/*
+!server/
+!server/*
 !res/
 !res/*
 !CMakeLists.txt
@@ -17,9 +21,9 @@
 !README.md
 !LICENSE
 
-src/CMakeFiles
-src/Makefile
-src/cmake_install.cmake
+client/CMakeFiles
+client/Makefile
+client/cmake_install.cmake
 
 tests/CMakeFiles
 tests/Makefile

@@ -37,7 +37,9 @@ FetchContent_MakeAvailable(cpp-httplib)
 FetchContent_MakeAvailable(nlohmann_json) 
 FetchContent_MakeAvailable(spdlog) 
 
-add_subdirectory(src)
+add_subdirectory(lib)
+add_subdirectory(server)
+add_subdirectory(client)
 
 if (ENABLE_TESTING)
     enable_testing()

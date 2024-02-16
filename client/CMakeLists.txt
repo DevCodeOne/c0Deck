@@ -1,20 +1,10 @@
-set(SOURCES_LIB
-    )
-
-# Qt6
-# qt_add_library(c0deckLib STATIC ${SOURCES_LIB})
-add_library(c0deckLib STATIC ${SOURCES_LIB})
-target_include_directories(c0deckLib PUBLIC .)
-
 set(SOURCES_EXEC
     c0deck.cpp
     application_entry.h
     application_entry.cpp
-    config.h
-    config.cpp
     instance.h
     instance.cpp
-    json_utils.h
+    components.h
 
     controls/componentcreator.h
     controls/componentcreator.cpp
@@ -41,6 +31,7 @@ set(SOURCES_EXEC
 #     )
 
 add_executable(c0deck ${SOURCES_EXEC})
+target_include_directories(c0deck PRIVATE .)
 
 target_link_libraries(c0deck PRIVATE c0deckLib)
 target_link_libraries(c0deck PRIVATE httplib nlohmann_json spdlog)
