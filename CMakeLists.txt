@@ -11,6 +11,10 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+option(BuildSever "Build server" ON)
+option(BuildClient "Build client" ON)
+option(UseSystem-gRPC "Use system grpc" ON)
+
 find_package(Qt5 COMPONENTS Core Quick Gui Qml WebEngine QuickControls2 REQUIRED)
 # qt_standard_project_setup(REQUIRES 6.4)
 
@@ -33,9 +37,31 @@ FetchContent_Declare(
     GIT_TAG v1.13.0
 )
 
+FetchContent_Declare(
+    CLI11
+    GIT_REPOSITORY https://github.com/cliutils/cli11
+    GIT_TAG v2.4.1
+)
+
 FetchContent_MakeAvailable(cpp-httplib) 
 FetchContent_MakeAvailable(nlohmann_json) 
 FetchContent_MakeAvailable(spdlog) 
+FetchContent_MakeAvailable(CLI11) 
+
+if (UseSystem-gRPC)
+    find_package(gRPC 1.60.0 REQUIRED)
+    find_package(protobuf 25.1.0 REQUIRED)
+else()
+    # TODO: add protobuf with FetchContent_Declare
+    set(FETCHCONTENT_QUIET OFF)
+    FetchContent_Declare(
+        gRPC
+        GIT_REPOSITORY https://github.com/grpc/grpc
+        GIT_TAG v1.60.0
+    )
+
+    FetchContent_MakeAvailable(gRPC)
+endif()
 
 add_subdirectory(lib)
 add_subdirectory(server)
