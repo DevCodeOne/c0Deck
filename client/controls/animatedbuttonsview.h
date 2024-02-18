@@ -12,8 +12,8 @@
 #include <QAbstractListModel>
 #include <QObject>
 
+#include "actions.h"
 #include "config.h"
-#include "controls/componentcreator.h"
 
 struct AnimatedButton {
     std::filesystem::path icon;
@@ -75,14 +75,6 @@ class AnimatedButtonList : public QAbstractListModel {
         QVector<AnimatedButton> mData;
 };
 
-// TODO: probably replace this with a central class to handle all possible actions, 
-// so that all possible actions can be triggered with every component
-class ButtonActionHandler : public QObject {
-    Q_OBJECT
-    public slots:
-        void handleAction(const QString &msg);
-};
-
 struct ButtonControlConfig {
     // Size of icons, might change to string in the future for different approach e.g. 8x8 (8 rows by 8 columns -> make it fit)
     unsigned int iconSize; 
@@ -112,26 +104,29 @@ class ButtonControl {
         template<typename CreatorType>
         static ButtonControl createInstance(const Control &parameters, CreatorType &creator);
 
-        const ButtonActionHandler *getActionHandler() const;
+        const Actions *getActionHandler() const;
 
         const AnimatedButtonList *getButtonList() const;
         AnimatedButtonList *getButtonList();
     private:
-        ButtonControl();
+        template<typename Instance>
+        ButtonControl(Instance *instance);
 
         std::unique_ptr<AnimatedButtonList> buttonList;
-        std::unique_ptr<ButtonActionHandler> actionHandler;
+        std::unique_ptr<Actions> actionHandler;
 };
 
 template<typename CreatorType>
 ButtonControl ButtonControl::createInstance(const Control &control, CreatorType &creator) {
-    ComponentPropertiesType properties{};
+    typename CreatorType::PropertiesType properties{};
 
     auto config = control.params.get<ButtonControlConfig>();
     properties["iconSize"] = config.iconSize;
     properties["spacing"] = config.spacing;
     properties["background"] = config.background;
-    ButtonControl instance{};
+
+    // TODO: improve this
+    ButtonControl instance{creator.getData()};
     instance.getButtonList()->populate(config.actions);
 
     auto createdComponent = creator.template createComponent<AnimatedButtonList>(
@@ -140,8 +135,15 @@ ButtonControl ButtonControl::createInstance(const Control &control, CreatorType 
         properties, 
         reinterpret_cast<AnimatedButtonList *>(instance.getButtonList()));
 
-    // TODO: put this code in the ButtonActionHandler class
+    // TODO: put this code in the Actions class
     QObject::connect(createdComponent, SIGNAL(doAction(QString)), instance.getActionHandler(), SLOT(handleAction(QString)));
 
     return instance;
 }
+
+template<typename Instance>
+ButtonControl::ButtonControl(Instance *instance) : 
+    buttonList(std::make_unique<AnimatedButtonList>()), 
+    actionHandler(std::make_unique<Actions>(instance->getData().getClientInstance())) {
+}
+

@@ -17,7 +17,7 @@
 #include <variant>
 
 #include "application_entry.h"
-#include "instance.h"
+#include "client_types.h"
 #include "utils.h"
 #include "controls/componentcreator.h"
 
@@ -61,10 +61,11 @@ bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
     QRect geometry = QGuiApplication::primaryScreen()->availableVirtualGeometry();
 
     // TODO: actually use values of config
-    context->setContextProperty(QStringLiteral("initialWidth"), 1200);
+    const auto &screenInfo = instance.getConfig().getScreenInfo();
+    context->setContextProperty(QStringLiteral("initialWidth"), 1280);
     context->setContextProperty(QStringLiteral("initialHeight"), 400);
-    context->setContextProperty(QStringLiteral("iconSize"), 100);
-    context->setContextProperty(QStringLiteral("landScape"), false);
+    context->setContextProperty(QStringLiteral("landScape"), 
+        static_cast<std::underlying_type_t<Angle>>(screenInfo.rotation.value_or(Angle::_0)));
 
     engine.load(QUrl(QStringLiteral("qrc:/qml/MainWindow.qml")));
 
@@ -82,7 +83,7 @@ bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
 
     auto qmlCreator = 
     [&engine, &content, &tabbar]
-        (const std::string &title, const std::string &componentName, const ComponentPropertiesType &properties, auto *model) {
+        (const std::string &title, const std::string &componentName, const ComponentProperties &properties, auto *model) {
         auto name = fmt::format("qrc:/qml/{}.qml", componentName);
         spdlog::debug("Adding component : {}", name);
         // The same component can probably be loaded only once -> use hashmap
@@ -142,7 +143,7 @@ bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
         return createdComponent;
     };
 
-    ComponentCreator creator{qmlCreator};
+    auto creator = makeComponentCreator<ComponentProperties>(qmlCreator, &instance);
 
     for (const auto &currentControl : instance.getConfig().getControls()) {
         componentRegistry.createInstance(currentControl, creator);

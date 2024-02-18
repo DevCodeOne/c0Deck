@@ -23,7 +23,7 @@ ApplicationWindow {
             },
             Translate {
                 x: 0
-                y: landScape ? initialHeight : 0
+                y: landScape ? initialWidth : 0
             }
         ]
         width: initialWidth

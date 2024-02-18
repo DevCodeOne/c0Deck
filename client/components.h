@@ -6,7 +6,6 @@
 #include <vector>
 #include <utility>
 
-#include "build_config.h"
 #include "config.h"
 
 template<typename T>
@@ -84,5 +83,3 @@ struct Components { };
 
 template<typename ... T>
 struct Components<std::tuple<T ...>> { };
-
-using ComponentRegistry = Detail::ComponentRegistry<Components<ComponentList>>;

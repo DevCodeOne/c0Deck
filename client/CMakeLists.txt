@@ -5,6 +5,13 @@ set(SOURCES_EXEC
     instance.h
     instance.cpp
     components.h
+    actions.h
+    actions.cpp
+    client.h
+    client.cpp
+    client_data.h
+    client_data.cpp
+    client_types.h
 
     controls/componentcreator.h
     controls/animatedbuttonsview.h

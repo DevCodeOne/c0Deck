@@ -27,6 +27,7 @@ Rectangle {
         id: videoOutput
         source: player
         fillMode: VideoOutput.PreserveAspectCrop
+        flushMode: VideoOutput.LastFrame
         anchors.fill: parent
     }
 

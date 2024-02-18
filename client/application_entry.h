@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include "instance.h"
+#include "client_types.h"
 
 class QCommandLineParser;
 

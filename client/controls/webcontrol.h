@@ -7,7 +7,6 @@
 #include "nlohmann/json.hpp"
 
 #include "config.h"
-#include "controls/componentcreator.h"
 
 struct WebControlConfig {
     std::string initialUrl;
@@ -37,7 +36,7 @@ class WebControl {
 
 template<typename CreatorType>
 WebControl WebControl::createInstance(const Control &control, CreatorType &creator) {
-    ComponentPropertiesType properties{};
+    typename CreatorType::PropertiesType properties{};
 
     auto config = control.params.get<WebControlConfig>();
     properties["initialUrl"] = config.initialUrl;

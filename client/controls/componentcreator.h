@@ -7,38 +7,31 @@
 #include <variant>
 #include <filesystem>
 
-using ComponentPropertiesType = std::map<std::string, std::variant<std::string, std::filesystem::path, int, unsigned int>>;
-
 // TODO: add parameter check
-template<typename ComponentFactoryMethod>
+// TODO: should UserData be really used, or is another mechanism better suited ?
+template<typename ComponentFactoryMethod, typename UserData, typename P>
 class ComponentCreator {
     public:
+        using PropertiesType = P;
 
-        ComponentCreator(ComponentFactoryMethod func);
+        ComponentCreator(ComponentFactoryMethod func, UserData *user) : creationFunc(func), data(user) {}
+
+        auto getData() { return data; }
 
         template<typename T = void>
         auto createComponent(
             const std::string &title,
             const std::string &componentName,
-            const ComponentPropertiesType &properties,
-            T *model = nullptr);
+            const PropertiesType &properties,
+            T *model = nullptr) {
+                return creationFunc(title, componentName, properties, model);
+            }
     private:
         ComponentFactoryMethod creationFunc;
+        UserData *data; 
 };
 
-template<typename ComponentFactory>
-ComponentCreator(ComponentFactory func) -> ComponentCreator<ComponentFactory>;
-
-template<typename ComponentFactory>
-ComponentCreator<ComponentFactory>::ComponentCreator(ComponentFactory func) : creationFunc(func) { }
-
-template<typename ComponentFactory>
-template<typename T>
-auto ComponentCreator<ComponentFactory>::createComponent(
-    const std::string &title, 
-    const std::string &componentName, 
-    const ComponentPropertiesType &properties, 
-    T *model) {
-
-    return creationFunc(title, componentName, properties, model);
+template<typename PropertiesType>
+auto makeComponentCreator(auto callable, auto *userData) {
+    return ComponentCreator<decltype(callable), std::remove_pointer_t<decltype(userData)>, PropertiesType>{callable, userData};
 }

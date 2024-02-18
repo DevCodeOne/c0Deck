@@ -1,11 +1,15 @@
-#include <fstream>
 #include <cstdlib>
+#include <fstream>
+
+#include "grpcpp/grpcpp.h"
 
 #include "nlohmann/json.hpp"
+
 #include "spdlog/spdlog.h"
 
 #include "application_entry.h"
-#include "instance.h"
+#include "client_types.h"
+#include "client.h"
 
 int main(int argc, char *argv[]) {
     InstanceEvents events {
@@ -43,6 +47,11 @@ int main(int argc, char *argv[]) {
                 spdlog::debug("Set config");
 
                 spdlog::debug("Set server {} as target", config.getServer());
+
+                auto clientInstance = std::make_shared<Client>(grpc::CreateChannel(config.getServer(), 
+                                                                grpc::InsecureChannelCredentials()));
+
+                instance.setData(clientInstance, DataType<ClientDataType::ClientInstance>{});
                 return true;
             }
         }
