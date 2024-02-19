@@ -14,8 +14,9 @@ Rectangle {
 
     AnimatedImage {
         id: animated
-        width: parent.width
-        height: parent.height
+        anchors.centerIn: parent
+        width: parent.width - parent.border.width * 2
+        height: parent.height- parent.border.width * 2
         source: icon
     }
 }

@@ -1,11 +1,40 @@
-message Request {
-    required string action = 1;
+syntax = "proto3";
+
+message ActionRequest {
+    string action = 1;
 }
 
-message Reply {
-    required string result = 1;
+message ActionResult {
+    string result = 1;
+}
+
+message NotifyRequest {
+    string reverseServerAddress = 1;
+}
+
+message NotifyResult {
+    bool successful = 1;
 }
 
 service Greeter {
-   rpc doAction(Request) returns (Reply) {}
+   rpc doAction(ActionRequest) returns (ActionResult) {}
+   rpc requestNotification(NotifyRequest) returns (NotifyResult) {}
+}
+
+message AudioStreams {
+
+    message Stream {
+        string name = 1;
+        int32 volume = 2;
+    }
+
+    repeated Stream streams = 1;
+}
+
+message GotStreamsResult {
+    string result = 1;
+}
+
+service DeckServer {
+    rpc sendStreams(AudioStreams) returns (GotStreamsResult) {}
 }

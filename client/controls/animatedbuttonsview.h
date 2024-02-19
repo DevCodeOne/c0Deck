@@ -55,7 +55,7 @@ class AnimatedButtonList : public QAbstractListModel {
                     break;
                 }
                 case DataRole::Action:
-                return QString::fromStdString(mData[index.row()].action);
+                    return QString::fromStdString(mData[index.row()].action);
                 break;
             }
 
@@ -129,11 +129,11 @@ ButtonControl ButtonControl::createInstance(const Control &control, CreatorType 
     ButtonControl instance{creator.getData()};
     instance.getButtonList()->populate(config.actions);
 
-    auto createdComponent = creator.template createComponent<AnimatedButtonList>(
+    auto createdComponent = creator.createComponent(
         control.name, 
         "ButtonView", 
         properties, 
-        reinterpret_cast<AnimatedButtonList *>(instance.getButtonList()));
+        instance.getButtonList());
 
     // TODO: put this code in the Actions class
     QObject::connect(createdComponent, SIGNAL(doAction(QString)), instance.getActionHandler(), SLOT(handleAction(QString)));

@@ -54,6 +54,14 @@ struct JsonOptional {
 
     const T &value() const { return *mValue; }
 
+    T value_or(const T &init) const { 
+        if (has_value()) {
+            return *mValue;
+        }
+
+        return init;
+    }
+
     private:
     std::optional<T> mValue;
 };

@@ -1,7 +1,5 @@
 #include <QQmlEngine>
 
-#include "spdlog/spdlog.h"
-
 #include "animatedbuttonsview.h"
 
 void ButtonControl::initializeComponent() {

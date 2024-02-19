@@ -6,5 +6,8 @@
         <file>qml/ButtonView.qml</file>
         <file>qml/WebControl.qml</file>
         <file>qml/CustomTabButton.qml</file>
+        <file>qml/AnimatedBackground.qml</file>
+        <file>qml/AudioStream.qml</file>
+        <file>qml/AudioStreamControl.qml</file>
     </qresource>
 </RCC>

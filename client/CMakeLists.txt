@@ -16,6 +16,8 @@ set(SOURCES_EXEC
     controls/componentcreator.h
     controls/animatedbuttonsview.h
     controls/animatedbuttonsview.cpp
+    controls/audiostreamcontrol.h
+    controls/audiostreamcontrol.cpp
     controls/webcontrol.h
     controls/webcontrol.cpp
     

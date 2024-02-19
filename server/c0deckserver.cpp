@@ -17,10 +17,15 @@
 
 #include "CLI/CLI.hpp"
 
+std::latch serverInitBarrier{ 1 };
+auto serverLogger = spdlog::stdout_color_st("Server");
+std::atomic_int signalStatus = 0;
+
 namespace grpc {
     class GreeterServiceImpl : public Greeter::Service {
-        Status doAction(ServerContext *context, const Request *request, Reply *reply) override {
-            spdlog::debug("Got action : {}", request->action());
+        Status doAction(ServerContext *context, const ActionRequest *request, ActionResult *reply) override {
+            serverLogger->debug("Got action : {}", request->action());
+            reply->set_result("Answer from server");
             return Status::OK;
         }
     };
@@ -28,9 +33,6 @@ namespace grpc {
 
 std::unique_ptr<grpc::GreeterServiceImpl> serviceInstance = nullptr;
 std::unique_ptr<grpc::Server> serverInstance = nullptr;
-std::latch serverInitBarrier{ 1 };
-auto serverLogger = spdlog::stdout_color_st("Server");
-std::atomic_int signalStatus = 0;
 
 void signalHandler(int signal) {
     switch (signal) {

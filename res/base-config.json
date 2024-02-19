@@ -1,5 +1,5 @@
 {
-    "server" : "127.0.0.1:8050",
+    "server" : "127.0.0.1:9999",
     "screen": { "width" : "1280", "height" : "400", "orientation" : "landscape"},
     "controls" : [
         {
@@ -22,9 +22,13 @@
             }
         },
         {
-            "type" : "VolumeControl",
-            "name" : "VolumeControl",
-            "params": { }
+            "type" : "AudioStreamControl",
+            "name" : "Audio Streams",
+            "params": { 
+                "spacing": 20,
+                "controlHeight": 80,
+                "background" : "../priv-res/background.mp4"
+            }
         },
         {
             "type" : "WebControl",

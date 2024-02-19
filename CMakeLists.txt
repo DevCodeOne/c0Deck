@@ -13,7 +13,10 @@ set(CMAKE_AUTOUIC ON)
 
 option(BuildSever "Build server" ON)
 option(BuildClient "Build client" ON)
+option(EnableAudioStreamControl "Enable audio streams volume control" ON)
 option(UseSystem-gRPC "Use system grpc" ON)
+option(UseSystem-sdbus-cpp "Use system sdbus cpp" ON)
+option(UseSystem-PulseAudio "Use system pulseaudio" ON)
 
 find_package(Qt5 COMPONENTS Core Quick Gui Qml WebEngine QuickControls2 REQUIRED)
 # qt_standard_project_setup(REQUIRES 6.4)
@@ -61,6 +64,17 @@ else()
     )
 
     FetchContent_MakeAvailable(gRPC)
+endif()
+
+if (UseSystem-sdbus-cpp)
+    find_package(sdbus-c++ REQUIRED)
+else()
+    # TODO: add FetchContent
+endif()
+
+if (EnableAudioStreamControl AND UseSystem-PulseAudio)
+    find_package(PulseAudio REQUIRED)
+else()
 endif()
 
 add_subdirectory(lib)

@@ -36,6 +36,7 @@ ApplicationWindow {
             height: parent.height
             spacing: 0
             TabBar {
+                z : 1
                 Layout.fillWidth : true
                 id: mainTabs
                 position: TabBar.Footer

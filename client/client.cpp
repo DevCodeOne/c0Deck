@@ -5,9 +5,9 @@
 Client::Client(std::shared_ptr<grpc::Channel> channel) : mChannel(Greeter::NewStub(channel)) {}
 
 std::string Client::doAction(const std::string &actionStr) {
-    Request req;
+    ActionRequest req;
     req.set_action(actionStr);
-    Reply rep;
+    ActionResult rep;
     grpc::ClientContext context;
     
     grpc::Status status = mChannel->doAction(&context, req, &rep);

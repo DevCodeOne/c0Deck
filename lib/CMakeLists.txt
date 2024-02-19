@@ -1,4 +1,5 @@
 set(SOURCES_LIB
+        utils.h
         config.h
         config.cpp
         json_utils.h

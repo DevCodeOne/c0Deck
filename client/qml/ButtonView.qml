@@ -14,23 +14,7 @@ Rectangle {
     required property string background
     required property AnimatedButtonList model
 
-    MediaPlayer {
-        id: player
-        loops: MediaPlayer.Infinite
-        source : background
-        Component.onCompleted: {
-            player.play()
-        }
-    }
-
-    VideoOutput {
-        id: videoOutput
-        source: player
-        fillMode: VideoOutput.PreserveAspectCrop
-        flushMode: VideoOutput.LastFrame
-        anchors.fill: parent
-    }
-
+    AnimatedBackground { background : parent.background }
 
     GridView {
         id: buttonGrid
