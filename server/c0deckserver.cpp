@@ -17,6 +17,8 @@
 
 #include "CLI/CLI.hpp"
 
+#include "serverconfig.h"
+
 std::latch serverInitBarrier{ 1 };
 auto serverLogger = spdlog::stdout_color_st("Server");
 std::atomic_int signalStatus = 0;
@@ -72,10 +74,9 @@ int main(int argc, char *argv[]) {
     argv = app.ensure_utf8(argv);
 
     uint16_t serverPort = 9999;
-    std::string listenTo = "0.0.0.0";
     bool verboseOutput = false;
-    app.add_option("-p,--port", serverPort, "Port to start gRPC server on");
-    app.add_option("-a,--adress", listenTo, "Adress to bind the server to");
+    std::string configPath = "config.json";
+    app.add_option("-c,--config", configPath, "Path to config file");
     app.add_flag("-v", verboseOutput, "Enable verbose output");
 
     CLI11_PARSE(app, argc, argv);
@@ -84,7 +85,11 @@ int main(int argc, char *argv[]) {
         serverLogger->set_level(spdlog::level::debug);
     }
 
-    std::jthread serverRunner{[listenTo, serverPort]() { runServer(listenTo, serverPort); }};
+    std::ifstream configInput(configPath);
+    auto loadedConfig = nlohmann::json::parse(configInput);
+    const auto serverConf = loadedConfig.get<ServerConfig>();
+
+    std::jthread serverRunner{[&serverConf]() { runServer(serverConf.listenTo, serverConf.port); }};
 
     serverLogger->debug("Before wait ..");
     serverInitBarrier.wait();

@@ -2,6 +2,7 @@ set(SOURCES_LIB
         utils.h
         config.h
         config.cpp
+        components.h
         json_utils.h
     )
 

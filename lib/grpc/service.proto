@@ -16,11 +16,6 @@ message NotifyResult {
     bool successful = 1;
 }
 
-service Greeter {
-   rpc doAction(ActionRequest) returns (ActionResult) {}
-   rpc requestNotification(NotifyRequest) returns (NotifyResult) {}
-}
-
 message AudioStreams {
 
     message Stream {
@@ -33,6 +28,12 @@ message AudioStreams {
 
 message GotStreamsResult {
     string result = 1;
+}
+
+service Greeter {
+   rpc doAction(ActionRequest) returns (ActionResult) {}
+   rpc getStreams(ActionRequest) returns (AudioStreams) {}
+   rpc requestNotification(NotifyRequest) returns (NotifyResult) {}
 }
 
 service DeckServer {

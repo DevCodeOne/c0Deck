@@ -1,11 +1,6 @@
 #pragma once
 
-#include <functional>
-#include <utility>
-#include <map>
 #include <string>
-#include <variant>
-#include <filesystem>
 
 // TODO: add parameter check
 // TODO: should UserData be really used, or is another mechanism better suited ?

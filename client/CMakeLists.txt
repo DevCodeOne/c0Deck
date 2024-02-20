@@ -4,7 +4,6 @@ set(SOURCES_EXEC
     application_entry.cpp
     instance.h
     instance.cpp
-    components.h
     actions.h
     actions.cpp
     client.h

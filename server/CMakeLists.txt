@@ -1,5 +1,8 @@
 set(SOURCES_SERVER
     c0deckserver.cpp
+    pulsestreams.h
+    pulsestreams.cpp
+    serverconfig.h
     )
 
 add_executable(c0deckServer ${SOURCES_SERVER})

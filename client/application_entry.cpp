@@ -146,7 +146,7 @@ bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
     auto creator = makeComponentCreator<ComponentProperties>(qmlCreator, &instance);
 
     for (const auto &currentControl : instance.getConfig().getControls()) {
-        componentRegistry.createInstance(currentControl, creator);
+        componentRegistry.createInstance(currentControl.type, currentControl, creator);
     }
 
     return application.exec();

@@ -6,8 +6,6 @@
 #include <vector>
 #include <utility>
 
-#include "config.h"
-
 template<typename T>
 struct Components;
 
@@ -24,8 +22,8 @@ namespace Detail {
             using ComponentType = std::variant<ComponentTypes ..., std::monostate>;
 
             static void initializeComponents();
-            template<typename Callable>
-            bool createInstance(const Control &controlDescription, Callable callable);
+            template<typename Parameter, typename Callable>
+            bool createInstance(std::string_view name, const Parameter &controlDescription, Callable callable);
 
             ComponentType get(std::string_view name);
         private:
@@ -54,15 +52,17 @@ namespace Detail {
     }
 
     template<typename ... ComponentTypes>
-    template<typename ComponentCreator>
-    bool ComponentRegistry<Components<std::tuple<ComponentTypes ...>>>::createInstance(const Control &control, ComponentCreator creator) {
+    template<typename Parameter, typename ComponentCreator>
+    bool ComponentRegistry<Components<std::tuple<ComponentTypes ...>>>::createInstance(
+        std::string_view typeName, 
+        const Parameter &param, ComponentCreator creator) {
         ComponentType createdComponent{std::monostate{}};
 
-        auto initFunc = [&control, &createdComponent, &creator](auto Index) {
+        auto initFunc = [&param, &typeName, &createdComponent, &creator](auto Index) {
             using CurrentType = std::tuple_element_t<decltype(Index)::value, std::tuple<ComponentTypes ...>>;
-            if (CurrentType::type == control.type) {
+            if (CurrentType::type == typeName) {
                 // Yes create this type
-                createdComponent = CurrentType::createInstance(control, creator);
+                createdComponent = CurrentType::createInstance(param, creator);
             }
         };
 
