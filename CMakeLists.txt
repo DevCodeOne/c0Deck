@@ -46,10 +46,19 @@ FetchContent_Declare(
     GIT_TAG v2.4.1
 )
 
+FetchContent_Declare(
+    chaiscript
+    GIT_REPOSITORY https://github.com/ChaiScript/ChaiScript/
+    GIT_TAG v6.1.0
+)
+
 FetchContent_MakeAvailable(cpp-httplib) 
 FetchContent_MakeAvailable(nlohmann_json) 
 FetchContent_MakeAvailable(spdlog) 
 FetchContent_MakeAvailable(CLI11) 
+
+option(BUILD_TESTING "" OFF)
+FetchContent_MakeAvailable(chaiscript) 
 
 if (UseSystem-gRPC)
     find_package(gRPC 1.60.0 REQUIRED)

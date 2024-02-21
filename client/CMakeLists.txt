@@ -3,7 +3,6 @@ set(SOURCES_EXEC
     application_entry.h
     application_entry.cpp
     instance.h
-    instance.cpp
     actions.h
     actions.cpp
     client.h

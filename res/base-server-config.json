@@ -1,5 +1,5 @@
 {
-    "listenTo": "0.0.0.0",
+    "listenTo": "127.0.0.1",
     "port" : 9999,
     "modules" : ["pulsestreams", "commands"]
 }

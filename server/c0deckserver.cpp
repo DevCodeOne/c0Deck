@@ -4,6 +4,7 @@
 #include <latch>
 #include <string>
 #include <thread>
+#include <tuple>
 #include <csignal>
 
 #include "service.grpc.pb.h"
@@ -17,17 +18,30 @@
 
 #include "CLI/CLI.hpp"
 
+#include "components.h"
+
 #include "serverconfig.h"
+#include "serveractions.h"
+#include "commands.h"
+
+using ComponentRegistry = Detail::ComponentRegistry<Components<std::tuple<Commands>>>;
 
 std::latch serverInitBarrier{ 1 };
 auto serverLogger = spdlog::stdout_color_st("Server");
+Actions actions;
 std::atomic_int signalStatus = 0;
 
 namespace grpc {
     class GreeterServiceImpl : public Greeter::Service {
         Status doAction(ServerContext *context, const ActionRequest *request, ActionResult *reply) override {
             serverLogger->debug("Got action : {}", request->action());
-            reply->set_result("Answer from server");
+            try {
+                const auto result = actions.eval(request->action());
+                serverLogger->debug("Action result : {}", result);
+                reply->set_result(result.c_str());
+            } catch (std::exception &e) {
+                serverLogger->debug("Exception occured when trying to exec command : {}", e.what(), request->action());
+            }
             return Status::OK;
         }
     };
@@ -88,6 +102,13 @@ int main(int argc, char *argv[]) {
     std::ifstream configInput(configPath);
     auto loadedConfig = nlohmann::json::parse(configInput);
     const auto serverConf = loadedConfig.get<ServerConfig>();
+
+    ComponentRegistry registry;
+    registry.initializeComponents(actions);
+
+    for (const auto &currentModule : serverConf.modules) {
+        registry.createInstance(currentModule, "", [](){});
+    }
 
     std::jthread serverRunner{[&serverConf]() { runServer(serverConf.listenTo, serverConf.port); }};
 
