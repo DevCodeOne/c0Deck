@@ -1,9 +1,7 @@
 #pragma once
 
-#include <optional>
 #include <functional>
 #include <string>
-#include <map>
 
 namespace Detail {
 
@@ -20,7 +18,6 @@ struct InstanceEvents {
 };
 
 // TODO: Add possibility to add userdata via enum 
-// e.g. setData(UserData::Server, ServerType)
 // std::tuple, std::map with string or enum ?
 // Special Dataclass ?
 template<typename ComponentRegistry, typename ConfigType, typename UserData>
@@ -41,12 +38,7 @@ class Instance {
         bool setConfig(Config &conf);
         const Config &getConfig() const { return config; }
 
-        // Maybe replace this with UserData
-        const std::map<std::string, std::string> &getArguments() const { return arguments; }
-        std::vector<std::string> getArgumentKeys() const;
         // TODO: maybe add possibility to specify type
-        bool addArgument(const std::string &name);
-        bool setArgumentValue(std::string name, std::string value);
         bool initRuntime() { return events.init(*this); }
 
         // TODO: maybe add event for specific userdata
@@ -62,7 +54,6 @@ class Instance {
         ComponentRegistry components;
         Config config;
         InstanceEvents<Instance> events;
-        std::map<std::string, std::string> arguments;
         UserData userData;
 };
 
@@ -74,38 +65,6 @@ bool Instance<ComponentRegistry, Config, UserData>::setConfig(Config &conf) {
     config = conf;
     // TODO: load config and check for errors
     if (!events.setConf(*this)) { return false; }
-
-    return true;
-}
-
-template<typename ComponentRegistry, typename Config, typename UserData>
-std::vector<std::string> Instance<ComponentRegistry, Config, UserData>::getArgumentKeys() const {
-    std::vector<std::string> keys;
-    for (const auto &[currentKey, _] : arguments) {
-        keys.push_back(currentKey);
-    }
-
-    return keys;
-}
-
-template<typename ComponentRegistry, typename Config, typename UserData>
-bool Instance<ComponentRegistry, Config, UserData>::addArgument(const std::string &name) {
-    if (arguments.contains(name)) {
-        return false;
-    }
-
-    arguments[name] = "";
-
-    return true;
-}
-
-template<typename ComponentRegistry, typename Config, typename UserData>
-bool Instance<ComponentRegistry, Config, UserData>::setArgumentValue(std::string name, std::string value) {
-    if (!arguments.contains(name)) {
-        return false;
-    }
-
-    arguments[name] = value;
 
     return true;
 }

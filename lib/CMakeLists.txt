@@ -1,4 +1,5 @@
 set(SOURCES_LIB
+        instance.h
         utils.h
         config.h
         config.cpp

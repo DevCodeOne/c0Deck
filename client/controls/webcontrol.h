@@ -28,14 +28,14 @@ class WebControl {
         WebControl &operator=(WebControl &&other) = default;
 
         template<typename CreatorType>
-        static WebControl createInstance(const Control &control, CreatorType &creator);
+        static WebControl createInstance(CreatorType &creator, const Control &control);
 
     private:
         WebControl() = default;
 };
 
 template<typename CreatorType>
-WebControl WebControl::createInstance(const Control &control, CreatorType &creator) {
+WebControl WebControl::createInstance(CreatorType &creator, const Control &control) {
     typename CreatorType::PropertiesType properties{};
 
     auto config = control.params.get<WebControlConfig>();

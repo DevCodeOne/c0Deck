@@ -19,28 +19,35 @@
 #include "CLI/CLI.hpp"
 
 #include "components.h"
+#include "instance.h"
 
 #include "serverconfig.h"
 #include "serveractions.h"
 #include "commands.h"
 
+struct UserData {
+    std::shared_ptr<spdlog::logger> serverLogger = spdlog::stdout_color_mt("Server");
+    ServerActions actions{};
+};
+
 using ComponentRegistry = Detail::ComponentRegistry<Components<std::tuple<Commands>>>;
+using InstanceType = Detail::Instance<ComponentRegistry, ServerConfig, UserData>;
+using InstanceEventType = Detail::InstanceEvents<InstanceType>;
 
 std::latch serverInitBarrier{ 1 };
-auto serverLogger = spdlog::stdout_color_st("Server");
-Actions actions;
-std::atomic_int signalStatus = 0;
+InstanceType instance(InstanceEventType {});
+std::atomic_int shutdown = 0;
 
 namespace grpc {
     class GreeterServiceImpl : public Greeter::Service {
         Status doAction(ServerContext *context, const ActionRequest *request, ActionResult *reply) override {
-            serverLogger->debug("Got action : {}", request->action());
+            instance.getData().serverLogger->debug("Got action : {}", request->action());
             try {
-                const auto result = actions.eval(request->action());
-                serverLogger->debug("Action result : {}", result);
+                const auto result = instance.getData().actions.eval(request->action());
+                instance.getData().serverLogger->debug("Action result : {}", result);
                 reply->set_result(result.c_str());
             } catch (std::exception &e) {
-                serverLogger->debug("Exception occured when trying to exec command : {}", e.what(), request->action());
+                instance.getData().serverLogger->debug("Exception occured when trying to exec command : {}", e.what(), request->action());
             }
             return Status::OK;
         }
@@ -53,9 +60,7 @@ std::unique_ptr<grpc::Server> serverInstance = nullptr;
 void signalHandler(int signal) {
     switch (signal) {
         case SIGINT:
-            serverLogger->debug("Received SIGINT signal");
-            serverLogger->debug("Shutting down server ...");
-            serverInstance->Shutdown();
+            shutdown = 1;
             break;
         case SIGHUP:
             // TODO: reload config
@@ -78,7 +83,7 @@ void runServer(const std::string &listenTo, uint16_t port) {
     builder.RegisterService(serviceInstance.get());
     serverInstance = builder.BuildAndStart();
 
-    serverLogger->info("Server listening on : {}", serverAddress);
+    instance.getData().serverLogger->info("Server listening on : {}", serverAddress);
     serverInitBarrier.count_down(1);
     serverInstance->Wait();
 }
@@ -96,7 +101,7 @@ int main(int argc, char *argv[]) {
     CLI11_PARSE(app, argc, argv);
 
     if (verboseOutput) {
-        serverLogger->set_level(spdlog::level::debug);
+        instance.getData().serverLogger->set_level(spdlog::level::debug);
     }
 
     std::ifstream configInput(configPath);
@@ -104,19 +109,27 @@ int main(int argc, char *argv[]) {
     const auto serverConf = loadedConfig.get<ServerConfig>();
 
     ComponentRegistry registry;
-    registry.initializeComponents(actions);
+    registry.initializeComponents(instance);
 
     for (const auto &currentModule : serverConf.modules) {
-        registry.createInstance(currentModule, "", [](){});
+        registry.createInstance("", [](){}, currentModule);
     }
 
     std::jthread serverRunner{[&serverConf]() { runServer(serverConf.listenTo, serverConf.port); }};
 
-    serverLogger->debug("Before wait ..");
+    instance.getData().serverLogger->debug("Before wait ..");
     serverInitBarrier.wait();
 
     std::signal(SIGINT, signalHandler);
-    serverLogger->debug("Server is initialized");
+    instance.getData().serverLogger->debug("Server is initialized");
+
+    while (!shutdown) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }
+
+    instance.getData().serverLogger->debug("Received SIGINT signal");
+    instance.getData().serverLogger->debug("Shutting down server ...");
+    serverInstance->Shutdown();
 
     // Waiting for server thread to end
     if (serverRunner.joinable()) {

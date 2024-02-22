@@ -7,14 +7,14 @@
 #include "chaiscript/chaiscript.hpp"
 
 
-class Actions {
+class ServerActions {
     public:
-        Actions();
-        Actions(const Actions &other) = delete;
-        Actions(Actions &&other) = default;
+        ServerActions();
+        ServerActions(const ServerActions &other) = delete;
+        ServerActions(ServerActions &&other) = default;
 
-        Actions &operator=(const Actions &other) = delete;
-        Actions &operator=(Actions &&other) = default;
+        ServerActions &operator=(const ServerActions &other) = delete;
+        ServerActions &operator=(ServerActions &&other) = default;
 
         template<typename Callable>
         void registerFunc(Callable callable, const std::string &funcName);
@@ -24,6 +24,6 @@ class Actions {
 };
 
 template<typename Callable>
-void Actions::registerFunc(Callable callable, const std::string &funcName) {
+void ServerActions::registerFunc(Callable callable, const std::string &funcName) {
     runtime->add(chaiscript::fun(callable), funcName);
 }

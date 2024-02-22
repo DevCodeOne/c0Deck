@@ -12,11 +12,11 @@
                 "actions" : [
                 {
                     "icon": "../res/ArrowAnimated.gif",
-                    "action": "exec(\"Testing\")"
+                    "action": "exec(\"echo Testing\", true)"
                 },
                 {
                     "icon": "../res/ArrowAnimated.gif",
-                    "action": "exec(\"Testing\")"
+                    "action": "exec(\"echo Testing\", true)"
                 }
                 ]
             }

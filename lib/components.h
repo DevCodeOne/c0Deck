@@ -23,8 +23,8 @@ namespace Detail {
             using ComponentType = std::variant<ComponentTypes ..., std::monostate>;
 
             static void initializeComponents(auto && ... arguments);
-            template<typename Parameter, typename Callable>
-            bool createInstance(std::string_view name, const Parameter &controlDescription, Callable callable);
+            template<typename Callable>
+            bool createInstance(std::string_view name, Callable callable, auto && ... args );
 
             ComponentType get(std::string_view name);
         private:
@@ -53,19 +53,17 @@ namespace Detail {
         }, std::make_index_sequence<sizeof...(ComponentTypes)>{});
     }
 
-    // TODO: do the same parameter forward trick as used in the initializeComponent func
     template<typename ... ComponentTypes>
-    template<typename Parameter, typename ComponentCreator>
+    template<typename ComponentCreator>
     bool ComponentRegistry<Components<std::tuple<ComponentTypes ...>>>::createInstance(
-        std::string_view typeName, 
-        const Parameter &param, ComponentCreator creator) {
+        std::string_view typeName, ComponentCreator creator, auto && ... args) {
         ComponentType createdComponent{std::monostate{}};
 
-        auto initFunc = [&param, &typeName, &createdComponent, &creator](auto Index) {
+        auto initFunc = [&](auto Index) {
             using CurrentType = std::tuple_element_t<decltype(Index)::value, std::tuple<ComponentTypes ...>>;
             if (CurrentType::type == typeName) {
                 // Yes create this type
-                createdComponent = CurrentType::createInstance(param, creator);
+                createdComponent = CurrentType::createInstance(creator, std::forward<decltype(args)>(args) ...);
             }
         };
 

@@ -102,7 +102,7 @@ class ButtonControl {
         ButtonControl &operator=(ButtonControl &&other) = default;
 
         template<typename CreatorType>
-        static ButtonControl createInstance(const Control &parameters, CreatorType &creator);
+        static ButtonControl createInstance(CreatorType &creator, const Control &parameters);
 
         const Actions *getActionHandler() const;
 
@@ -117,7 +117,7 @@ class ButtonControl {
 };
 
 template<typename CreatorType>
-ButtonControl ButtonControl::createInstance(const Control &control, CreatorType &creator) {
+ButtonControl ButtonControl::createInstance(CreatorType &creator, const Control &control) {
     typename CreatorType::PropertiesType properties{};
 
     auto config = control.params.get<ButtonControlConfig>();

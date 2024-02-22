@@ -2,7 +2,6 @@ set(SOURCES_EXEC
     c0deck.cpp
     application_entry.h
     application_entry.cpp
-    instance.h
     actions.h
     actions.cpp
     client.h

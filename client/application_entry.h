@@ -1,10 +1,6 @@
 #pragma once
 
-#include <functional>
-
 #include "client_types.h"
-
-class QCommandLineParser;
 
 class MainWindow {
     public:

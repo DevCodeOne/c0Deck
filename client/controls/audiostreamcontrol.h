@@ -86,7 +86,7 @@ class AudioStreamControl {
         AudioStreamControl &operator=(AudioStreamControl &&other) = default;
 
         template<typename CreatorType>
-        static AudioStreamControl createInstance(const Control &parameters, CreatorType &creator);
+        static AudioStreamControl createInstance(CreatorType &creator, const Control &parameters);
 
         const Actions *getActionHandler() const;
 
@@ -102,7 +102,7 @@ class AudioStreamControl {
 };
 
 template<typename CreatorType>
-AudioStreamControl AudioStreamControl::createInstance(const Control &control, CreatorType &creator) {
+AudioStreamControl AudioStreamControl::createInstance(CreatorType &creator, const Control &control) {
     typename CreatorType::PropertiesType properties{};
 
     auto config = control.params.get<AudioStreamControlSettings>();

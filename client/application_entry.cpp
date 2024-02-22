@@ -1,7 +1,9 @@
+#include <array>
 #include <chrono>
 #include <filesystem>
 #include <type_traits>
 #include <thread>
+#include <variant>
 
 #include <QtCore/QCommandLineOption>
 #include <QtCore/QCommandLineParser>
@@ -14,7 +16,6 @@
 #include <QtWebEngine>
 #include <QQmlComponent>
 #include <QMap>
-#include <variant>
 
 #include "application_entry.h"
 #include "client_types.h"
@@ -22,6 +23,8 @@
 #include "controls/componentcreator.h"
 
 bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
+    const auto commandLineOptions = std::to_array<std::string>({"config", "logLevel"});
+
     QQuickStyle::setStyle("Material");
     Instance::ComponentRegistryType::initializeComponents();
 
@@ -34,10 +37,9 @@ bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
     parser.addHelpOption();
     parser.addVersionOption();
 
-    auto keys = instance.getArgumentKeys();
     QList<QCommandLineOption> options;
 
-    for (const auto &currentKey : keys) {
+    for (const auto &currentKey : commandLineOptions) {
         auto asQString = QString::fromStdString(currentKey);
         QCommandLineOption currentOption(asQString, QString("Set") + asQString, asQString);
         options.append(currentOption);
@@ -47,10 +49,11 @@ bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
     parser.process(application);
 
     for (auto &currentOption : options) {
-        const auto value = parser.value(currentOption);
-        if (value != "") {
-            instance.setArgumentValue(currentOption.valueName().toStdString(), value.toStdString());
-        }
+        const auto stdKey = currentOption.valueName().toStdString();
+        const auto value = parser.value(currentOption).toStdString();
+
+        spdlog::info("{}:{}", stdKey, value);
+        instance.setData(value, stdKey);
     }
 
     instance.initRuntime();
@@ -146,7 +149,7 @@ bool MainWindow::initialize(int argc, char *argv[], Instance &instance) {
     auto creator = makeComponentCreator<ComponentProperties>(qmlCreator, &instance);
 
     for (const auto &currentControl : instance.getConfig().getControls()) {
-        componentRegistry.createInstance(currentControl.type, currentControl, creator);
+        componentRegistry.createInstance(currentControl.type, creator, currentControl);
     }
 
     return application.exec();
