@@ -82,6 +82,8 @@ else()
 endif()
 
 if (EnableAudioStreamControl AND UseSystem-PulseAudio)
+    find_package(ECM REQUIRED NO_MODULE)
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
     find_package(PulseAudio REQUIRED)
 else()
 endif()

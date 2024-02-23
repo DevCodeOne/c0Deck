@@ -17,7 +17,7 @@ target_include_directories(c0deckServer PRIVATE ${chaiscript_SOURCE_DIR}/include
 target_include_directories(c0deckServer PRIVATE .)
 # TODO: make optional for optional PulseAudio support
 if (EnableAudioStreamControl)
-    target_link_libraries(c0deckServer PRIVATE ${PulseAudio_LIBRARIES})
+    target_link_libraries(c0deckServer PRIVATE ${PulseAudio_LIBRARIES} ${PulseAudio_MAINLOOP_LIBRARY})
     target_include_directories(c0deckServer PRIVATE ${PulseAudio_INCLUDE_DIRS})
 endif()
 set_target_properties(c0deckServer PROPERTIES OUTPUT_NAME c0DeckServer)

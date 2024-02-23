@@ -7,6 +7,7 @@
 #include <tuple>
 #include <csignal>
 
+#include "pulsestreams.h"
 #include "service.grpc.pb.h"
 #include "grpcpp/grpcpp.h"
 #include "grpcpp/security/server_credentials.h"
@@ -22,6 +23,7 @@
 #include "instance.h"
 
 #include "serverconfig.h"
+#include "pulsestreams.h"
 #include "serveractions.h"
 #include "commands.h"
 
@@ -30,7 +32,7 @@ struct UserData {
     ServerActions actions{};
 };
 
-using ComponentRegistry = Detail::ComponentRegistry<Components<std::tuple<Commands>>>;
+using ComponentRegistry = Detail::ComponentRegistry<Components<std::tuple<Commands, PulseStreams>>>;
 using InstanceType = Detail::Instance<ComponentRegistry, ServerConfig, UserData>;
 using InstanceEventType = Detail::InstanceEvents<InstanceType>;
 
@@ -112,7 +114,7 @@ int main(int argc, char *argv[]) {
     registry.initializeComponents(instance);
 
     for (const auto &currentModule : serverConf.modules) {
-        registry.createInstance("", [](){}, currentModule);
+        registry.createInstance(currentModule, [](){}, instance);
     }
 
     std::jthread serverRunner{[&serverConf]() { runServer(serverConf.listenTo, serverConf.port); }};

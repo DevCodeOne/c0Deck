@@ -22,6 +22,8 @@ class Commands {
         static void initializeComponent(auto &instance) { 
             serverLogger = instance.getData().serverLogger;
             initializeComponent(instance.getData().actions); 
+
+            serverLogger->debug("initializedComponent : {}", type);
         }
 
         static void initializeComponent(ServerActions &actions);
