@@ -14,7 +14,7 @@ struct Process {
     pid_t processId;
 };
 
-// TODO: create class for process creation and checking
+// TODO: create class for process creation and checking, especially for platform dependent code
 class Commands {
     public:
         static inline constexpr std::string_view type = "commands";

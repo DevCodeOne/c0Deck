@@ -4,6 +4,10 @@ message ActionRequest {
     string action = 1;
 }
 
+message ActionStamp {
+    int32 time = 1;
+}
+
 message ActionResult {
     string result = 1;
 }
@@ -32,7 +36,7 @@ message GotStreamsResult {
 
 service Greeter {
    rpc doAction(ActionRequest) returns (ActionResult) {}
-   rpc getStreams(ActionRequest) returns (AudioStreams) {}
+   rpc getStreams(ActionStamp) returns (AudioStreams) {}
    rpc requestNotification(NotifyRequest) returns (NotifyResult) {}
 }
 

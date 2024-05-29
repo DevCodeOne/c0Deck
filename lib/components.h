@@ -74,7 +74,7 @@ namespace Detail {
             return false;
         }
 
-        componentInstances.push_back(std::move(createdComponent));
+        componentInstances.emplace_back(std::move(createdComponent));
         return true;
     }
 }

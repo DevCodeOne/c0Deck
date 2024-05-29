@@ -62,13 +62,13 @@ std::unique_ptr<grpc::Server> serverInstance = nullptr;
 void signalHandler(int signal) {
     switch (signal) {
         case SIGINT:
+        case SIGTERM:
             shutdown = 1;
             break;
         case SIGHUP:
             // TODO: reload config
             break;
     }
-    return;
 }
 
 void runServer(const std::string &listenTo, uint16_t port) {
@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
     const auto serverConf = loadedConfig.get<ServerConfig>();
 
     ComponentRegistry registry;
-    registry.initializeComponents(instance);
+    ComponentRegistry::initializeComponents(instance);
 
     for (const auto &currentModule : serverConf.modules) {
         registry.createInstance(currentModule, [](){}, instance);

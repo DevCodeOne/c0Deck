@@ -20,7 +20,9 @@ int main(int argc, char *argv[]) {
                 const std::string loglevel = instance.getData().getLogLevel();
 
                 const auto &configPath = instance.getData().getConfig();
-                spdlog::debug("Config path : {}", configPath);
+                spdlog::debug("Config path : {}, Working dir : {}",
+                              configPath,
+                              std::filesystem::current_path().string());
 
                 try {
                     std::ifstream configInput(configPath);

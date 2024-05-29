@@ -4,6 +4,8 @@ set(SOURCES_SERVER
     serveractions.cpp
     commands.h
     commands.cpp
+    audiocontrol.h
+    audiocontrol.cpp
     pulsestreams.h
     pulsestreams.cpp
     serverconfig.h

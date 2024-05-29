@@ -62,7 +62,7 @@ FetchContent_MakeAvailable(chaiscript)
 
 if (UseSystem-gRPC)
     find_package(gRPC 1.60.0 REQUIRED)
-    find_package(protobuf 25.1.0 REQUIRED)
+    find_package(protobuf 25.3.0 REQUIRED)
 else()
     # TODO: add protobuf with FetchContent_Declare
     set(FETCHCONTENT_QUIET OFF)
