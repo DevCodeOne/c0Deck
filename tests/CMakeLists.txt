@@ -5,7 +5,7 @@ add_executable(
 
 target_link_libraries(
     init
-    GTest::gtest_main
+    gtest_main
 )
 
 include(GoogleTest)

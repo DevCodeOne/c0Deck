@@ -22,6 +22,8 @@
 !.gitignore
 !README.md
 !LICENSE
+!vcpkg
+!vcpkg.json
 
 client/CMakeFiles
 client/Makefile

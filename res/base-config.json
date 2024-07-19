@@ -17,6 +17,14 @@
                 {
                     "icon": "../res/ArrowAnimated.gif",
                     "action": "exec(\"echo Testing\", true)"
+                },
+                {
+                    "icon": "../res/ArrowAnimated.gif",
+                    "action": "exec(\"echo Testing\", true)"
+                },
+                {
+                    "icon": "../res/ArrowAnimated.gif",
+                    "action": "exec(\"echo Testing\", true)"
                 }
                 ]
             }
