@@ -1,0 +1,27 @@
+{
+  "name" : "c0deck",
+  "version-string" : "latest",
+  "builtin-baseline" : "198d68dbcc6c907cb3d0b9b1d93c3df6ecf93c62",
+  "dependencies" : [ {
+    "name" : "cpp-httplib",
+    "version>=" : "0.15.3"
+  }, {
+    "name" : "nlohmann-json",
+    "version>=" : "3.11.3"
+  }, {
+    "name" : "spdlog",
+    "version>=" : "1.14.1"
+  }, {
+    "name" : "cli11",
+    "version>=" : "2.4.2"
+  }, {
+    "name" : "gtest",
+    "version>=" : "1.14.0#1"
+  }, {
+    "name" : "grpc",
+    "version>=" : "1.60.0"
+  }, {
+    "name" : "chaiscript",
+    "version>=" : "6.1.0#3"
+  } ]
+}

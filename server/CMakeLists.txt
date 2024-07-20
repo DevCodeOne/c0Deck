@@ -14,8 +14,20 @@ set(SOURCES_SERVER
 add_executable(c0deckServer ${SOURCES_SERVER})
 target_link_libraries(c0deckServer PRIVATE c0deckLib)
 target_link_libraries(c0deckServer PRIVATE proto-objects)
-target_link_libraries(c0deckServer PRIVATE httplib nlohmann_json spdlog cli11 SDBusCpp::sdbus-c++)
+target_link_libraries(c0deckServer PRIVATE
+        spdlog::spdlog_header_only
+        nlohmann_json::nlohmann_json
+        CLI11::CLI11
+        httplib::httplib
+        SDBusCpp::sdbus-c++)
+
+find_path(CHAISCRIPT_INCLUDE_DIR NAMES chaiscript.hpp REQUIRED PATH_SUFFIXES include/chaiscript)
+
 target_include_directories(c0deckServer PRIVATE .)
+target_include_directories(c0deckServer PRIVATE
+        ${CHAISCRIPT_INCLUDE_DIR}
+        ${HTTPLIB_INCLUDE_DIR}
+        ${CLI11_INCLUDE_DIR})
 # TODO: make optional for optional PulseAudio support
 if (EnableAudioStreamControl)
     target_link_libraries(c0deckServer PRIVATE ${PulseAudio_LIBRARIES} ${PulseAudio_MAINLOOP_LIBRARY})

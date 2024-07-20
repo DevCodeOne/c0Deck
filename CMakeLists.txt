@@ -22,9 +22,12 @@ find_package(Qt5 COMPONENTS Core Quick Gui Qml WebEngine QuickControls2 REQUIRED
 
 option(BUILD_TESTING "" OFF)
 
-find_package(gRPC CONFIG 1.60.0 REQUIRED)
-find_package(protobuf CONFIG 27.2.0 REQUIRED)
+find_package(gRPC CONFIG 1.51.1 REQUIRED)
+find_package(spdlog CONFIG 1.14.1 REQUIRED)
+find_package(CLI11 CONFIG 2.4.2 REQUIRED)
+find_package(httplib CONFIG 0.16.0 REQUIRED)
 find_package(sdbus-c++ CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
 
 if (EnableAudioStreamControl AND UseSystem-PulseAudio)
     find_package(ECM REQUIRED NO_MODULE)

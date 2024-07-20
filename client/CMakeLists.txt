@@ -40,7 +40,7 @@ target_include_directories(c0deck PRIVATE .)
 
 target_link_libraries(c0deck PRIVATE c0deckLib)
 target_link_libraries(c0deck PRIVATE proto-objects)
-target_link_libraries(c0deck PRIVATE httplib nlohmann_json spdlog)
+target_link_libraries(c0deck PRIVATE httplib::httplib nlohmann_json::nlohmann_json spdlog::spdlog_header_only)
 # target_link_libraries(c0deck PRIVATE Qt6::Core Qt6::Gui Qt6::Quick Qt6::Qml Qt6::WebView Qt6::QuickControls2)
 target_link_libraries(c0deck PRIVATE Qt5::Core Qt5::Gui Qt5::Quick Qt5::Qml Qt5::WebEngine Qt5::QuickControls2)
 

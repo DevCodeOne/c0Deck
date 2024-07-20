@@ -6,7 +6,7 @@
 #include <string_view>
 #include <optional>
 
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 #include "json_utils.h"
 
